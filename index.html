@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Merriweather', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #1e1e1e;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h1, h2, h3, h4 {
+            text-align: center;
+            color: #ffffff;
+            font-family: 'Merriweather', serif;
+            margin-top: 0;
+        }
+        
+        p, div, span, button, input, textarea, select {
+            font-family: 'Merriweather', serif;
+        }
+        
+        .btn {
+            background-color: #2e7d32;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+            font-family: 'Merriweather', serif;
+        }
+        
+        .btn:hover {
+            background-color: #1b5e20;
+        }
+        
+        .btn-secondary {
+            background-color: #c62828;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #b71c1c;
+        }
+        
+        .btn-tertiary {
+            background-color: #1565c0;
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #0d47a1;
+        }
+        
+        .admin-dashboard, .user-dashboard {
+            display: none;
+            background-color: #121212;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid #333;
+        }
+        
+        .admin-form, .user-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .admin-form input, .admin-form textarea, .admin-form select,
+        .user-form input, .user-form textarea, .user-form select {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background-color: #2d2d2d;
+            color: white;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .admin-form button, .user-form button {
+            background-color: #2e7d32;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .admin-questions-list, .user-list {
+            margin-top: 20px;
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .admin-question-item, .user-item {
+            background: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+        
+        .admin-question-actions, .user-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .correct-option {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .admin-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background: #333;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .admin-tab.active {
+            background: #2e7d32;
+        }
+        
+        .admin-tab-content {
+            display: none;
+        }
+        
+        .admin-tab-content.active {
+            display: block;
+        }
+        
+        .login-container, .register-container {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .login-form, .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .login-form input, .register-form input {
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background-color: #2d2d2d;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .error-message {
+            color: #f44336;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .remove-option {
+            padding: 5px 10px;
+            background-color: #c62828;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .wallet-container {
+            background: #2e7d32;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #1b5e20;
+        }
+        
+        .wallet-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: white;
+        }
+        
+        .wallet-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .wallet-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .add-money {
+            background-color: #1565c0;
+            color: white;
+        }
+        
+        .withdraw-money {
+            background-color: #ff8f00;
+            color: white;
+        }
+        
+        .user-info {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+        }
+        
+        .switch-mode {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .switch-btn {
+            background: none;
+            border: none;
+            color: #2196F3;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 500px;
+            color: white;
+            border: 1px solid #444;
+        }
+        
+        .modal-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .download-btn {
+            background-color: #1565c0;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 10px auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #e0e0e0;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+        
+        .modal-btn-primary {
+            background-color: #2e7d32;
+            color: white;
+        }
+        
+        .modal-btn-secondary {
+            background-color: #c62828;
+            color: white;
+        }
+        
+        .pending-requests {
+            margin-top: 20px;
+        }
+        
+        .request-item {
+            background: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .user-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .approve-btn {
+            background-color: #2e7d32;
+            color: white;
+        }
+        
+        .reject-btn {
+            background-color: #c62828;
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: #c62828;
+            color: white;
+        }
+        
+        .qr-settings {
+            margin-top: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 5px;
+        }
+        
+        /* Current question styles */
+        .current-question-container {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .current-question {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .current-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .current-option {
+            padding: 12px;
+            background: #333;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .current-option:hover {
+            background: #444;
+        }
+
+        .current-option.selected {
+            background-color: #1565c0;
+        }
+
+        .current-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background-color: #1565c0;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .skip-btn {
+            background-color: #ff8f00;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Countdown timer styles */
+        .countdown-timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5722;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .timer-ended {
+            color: #f44336;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Result message styles */
+        .result-message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .correct-message {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        .wrong-message {
+            background-color: #c62828;
+            color: white;
+        }
+
+        /* Next button container */
+        .next-btn-container {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* New styles for time settings */
+        .time-settings {
+            margin-top: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 5px;
+        }
+        
+        .time-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #2d2d2d;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .time-toggle {
+            padding: 8px 15px;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .time-toggle.closed {
+            background-color: #c62828;
+        }
+        
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-direction: column;
+        }
+        
+        .time-input-group {
+            flex: 1;
+            width: 100%;
+        }
+        
+        /* Header time status */
+        .quiz-status {
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        
+        .quiz-status.open {
+            background: #2e7d32;
+        }
+        
+        .quiz-status.closed {
+            background: #c62828;
+        }
+        
+        .no-questions-message {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+        }
+        
+        .no-balance-message {
+            background: #c62828;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #b71c1c;
+        }
+        
+        .already-answered-message {
+            background: #ff8f00;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #e65100;
+        }
+        
+        /* WhatsApp button styles */
+        .whatsapp-contact {
+            margin: 15px 0;
+        }
+        
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+        }
+        
+        /* Clear questions button */
+        .clear-questions-btn {
+            background-color: #c62828;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 15px 0;
+            display: block;
+            width: 100%;
+        }
+        
+        .clear-questions-btn:hover {
+            background-color: #b71c1c;
+        }
+        
+        /* WhatsApp number settings */
+        .whatsapp-settings {
+            margin-top: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 5px;
+        }
+        
+        /* Questions list styles */
+        .questions-list {
+            margin-top: 20px;
+        }
+        
+        .question-item {
+            background: #333;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .question-options {
+            margin-left: 10px;
+        }
+        
+        .question-option {
+            margin-bottom: 5px;
+        }
+        
+        .question-meta {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .question-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .edit-btn {
+            background-color: #1565c0;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .delete-question-btn {
+            background-color: #c62828;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+            .container {
+                padding: 20px;
+                margin-top: 30px;
+            }
+            
+            .admin-tab {
+                font-size: 16px;
+            }
+            
+            .time-inputs {
+                flex-direction: row;
+            }
+            
+            .modal-actions {
+                flex-wrap: nowrap;
+            }
+            
+            .wallet-btn {
+                font-size: 16px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                margin-top: 50px;
+            }
+            
+            .admin-tabs {
+                overflow-x: visible;
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="login-container" id="loginScreen">
+            <h1>Login</h1>
+            <form class="login-form" id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Mobile Number" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit" class="btn">Login</button>
+                <div class="error-message" id="loginErrorMessage">Invalid credentials</div>
+                <div class="switch-mode">
+                    Don't have an account? <button type="button" class="switch-btn" id="switchToRegister">Register</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Register Screen -->
+        <div class="register-container" id="registerScreen" style="display: none;">
+            <h1>Register</h1>
+            <form class="register-form" id="registerForm">
+                <input type="text" id="registerName" placeholder="Full Name" required>
+                <input type="text" id="registerMobile" placeholder="Mobile Number" required>
+                <input type="password" id="registerPassword" placeholder="Password" required>
+                <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                <button type="submit" class="btn">Register</button>
+                <div class="error-message" id="registerErrorMessage" style="display: none;"></div>
+                <div class="switch-mode">
+                    Already have an account? <button type="button" class="switch-btn" id="switchToLogin">Login</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- User Dashboard -->
+        <div class="user-dashboard" id="userDashboard" style="display: none;">
+            <div class="user-info">
+                <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                    <h2 id="userWelcome">Welcome, User!</h2>
+                    <div id="quizTimeStatus" class="quiz-status">Status: Loading...</div>
+                </div>
+                <p>Mobile: <span id="userMobileDisplay"></span></p>
+            </div>
+            
+            <div class="wallet-container">
+                <h3>Your Wallet</h3>
+                <div class="wallet-amount">₹<span id="walletAmount">0</span></div>
+                <div class="wallet-actions">
+                    <button class="wallet-btn add-money" id="addMoneyBtn">Add Money</button>
+                    <button class="wallet-btn withdraw-money" id="withdrawMoneyBtn">Withdraw</button>
+                </div>
+            </div>
+            
+            <!-- WhatsApp Contact Button -->
+            <div class="whatsapp-contact">
+                <button class="btn whatsapp-btn" id="whatsappBtn">
+                    <i class="fab fa-whatsapp"></i> Contact Support
+                </button>
+            </div>
+            
+            <!-- Questions will be displayed directly here -->
+            <div id="currentQuestionContainer" class="current-question-container">
+                <!-- Current question will be loaded here -->
+            </div>
+            <div id="noQuestionsMessage" style="display: none; text-align: center;">
+                <p>No questions available at the moment. Please check back later.</p>
+            </div>
+            
+            <button class="btn btn-secondary" id="logoutUserBtn">Logout</button>
+        </div>
+        
+        <!-- Admin Dashboard -->
+        <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+            <div class="admin-tabs">
+                <div class="admin-tab active" data-tab="create">Create Question</div>
+                <div class="admin-tab" data-tab="questions">Questions List</div>
+                <div class="admin-tab" data-tab="users">Users</div>
+                <div class="admin-tab" data-tab="requests">Requests</div>
+                <div class="admin-tab" data-tab="settings">Settings</div>
+            </div>
+            
+            <!-- Create Question Tab -->
+            <div class="admin-tab-content active" id="createTab">
+                <h2>Create New Question</h2>
+                <form class="admin-form" id="adminForm">
+                    <input type="text" id="questionInput" placeholder="Enter question" required>
+                    
+                    <div class="options-container" id="adminOptionsContainer">
+                        <div class="option-row">
+                            <input type="text" class="option-input" placeholder="Option A" required>
+                            <input type="radio" name="correctOption" value="0" checked>
+                            <span>Correct</span>
+                        </div>
+                        <div class="option-row">
+                            <input type="text" class="option-input" placeholder="Option B" required>
+                            <input type="radio" name="correctOption" value="1">
+                            <span>Correct</span>
+                        </div>
+                        <div class="option-row">
+                            <input type="text" class="option-input" placeholder="Option C" required>
+                            <input type="radio" name="correctOption" value="2">
+                            <span>Correct</span>
+                        </div>
+                        <div class="option-row">
+                            <input type="text" class="option-input" placeholder="Option D" required>
+                            <input type="radio" name="correctOption" value="3">
+                            <span>Correct</span>
+                        </div>
+                    </div>
+                    
+                    <div id="timerSettings" style="margin-top: 10px;">
+                        <label for="timerDuration">Timer Duration (seconds):</label>
+                        <input type="number" id="timerDuration" min="5" max="300" value="30">
+                    </div>
+                    
+                    <button type="submit" class="btn">Save Question</button>
+                </form>
+                
+                <!-- Clear Questions Button -->
+                <button class="clear-questions-btn" id="clearQuestionsBtn">
+                    <i class="fas fa-trash-alt"></i> Clear All Questions
+                </button>
+            </div>
+            
+            <!-- Questions List Tab -->
+            <div class="admin-tab-content" id="questionsTab">
+                <h2>All Questions</h2>
+                <div id="questionsListContainer" class="questions-list">
+                    <!-- Questions will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Users Tab -->
+            <div class="admin-tab-content" id="usersTab">
+                <h2>Manage Users</h2>
+                <div id="usersListContainer" class="admin-questions-list">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Requests Tab -->
+            <div class="admin-tab-content" id="requestsTab">
+                <h2>Pending Requests</h2>
+                <div class="pending-requests">
+                    <h3>Add Money Requests</h3>
+                    <div id="addMoneyRequestsList" class="admin-questions-list">
+                        <!-- Add money requests will be loaded here -->
+                    </div>
+                    
+                    <h3>Withdrawal Requests</h3>
+                    <div id="withdrawRequestsList" class="admin-questions-list">
+                        <!-- Withdrawal requests will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div class="admin-tab-content" id="settingsTab">
+                <h2>Payment Settings</h2>
+                <div class="qr-settings">
+                    <h3>QR Code for Payments</h3>
+                    <form id="qrUploadForm">
+                        <div class="form-group">
+                            <label for="qrCodeUpload">Upload QR Code Image</label>
+                            <input type="file" id="qrCodeUpload" accept="image/*" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qrCodeText">UPI ID (Optional)</label>
+                            <input type="text" id="qrCodeText" placeholder="Enter UPI ID (e.g. 1234567890@upi)">
+                        </div>
+                        <button type="submit" class="btn">Save QR Code</button>
+                    </form>
+                    
+                    <div id="currentQrContainer" style="margin-top: 20px; display: none;">
+                        <h3>Current QR Code</h3>
+                        <div class="qr-code-container">
+                            <img id="currentQrCode" src="" alt="Current QR Code" class="qr-code">
+                        </div>
+                        <p id="currentUpiId" style="text-align: center; margin-top: 10px;"></p>
+                    </div>
+                </div>
+                
+                <!-- WhatsApp Number Settings -->
+                <div class="whatsapp-settings">
+                    <h3>WhatsApp Contact Number</h3>
+                    <div class="form-group">
+                        <label for="whatsappNumber">WhatsApp Number for Support</label>
+                        <input type="text" id="whatsappNumber" placeholder="Enter WhatsApp number with country code (e.g. +919876543210)">
+                    </div>
+                    <button class="btn" id="saveWhatsappBtn">Save WhatsApp Number</button>
+                </div>
+                
+                <div class="time-settings">
+                    <h3>Quiz Timing Settings</h3>
+                    <div class="time-status">
+                        <span id="currentTimeStatus">Current Status: <span id="statusText">Loading...</span></span>
+                        <button id="toggleQuizStatus" class="time-toggle">Toggle Status</button>
+                    </div>
+                    
+                    <div class="time-inputs">
+                        <div class="time-input-group">
+                            <label for="openTime">Opening Time</label>
+                            <input type="time" id="openTime" class="form-control">
+                        </div>
+                        <div class="time-input-group">
+                            <label for="closeTime">Closing Time</label>
+                            <input type="time" id="closeTime" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <button id="saveTimeSettings" class="btn" style="margin-top: 15px;">Save Timing Settings</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" id="logoutAdminBtn">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Single data object to hold all application data
+        const quizAppData = {
+            users: [
+                {
+                    id: 1,
+                    name: "Admin User",
+                    mobile: "8658812906",
+                    password: "865881",
+                    isAdmin: true,
+                    wallet: 0,
+                    transactions: []
+                }
+            ],
+            questions: [
+                {
+                    id: 1,
+                    question: "Who is the Prime Minister of India?",
+                    options: ["Narendra Modi", "Rahul Gandhi", "Amit Shah", "Arvind Kejriwal"],
+                    correctAnswer: 0,
+                    timerDuration: 30
+                }
+            ],
+            addMoneyRequests: [],
+            withdrawRequests: [],
+            paymentQrCode: {
+                image: "",
+                upiId: ""
+            },
+            whatsappContactNumber: "+919876543210",
+            quizTiming: {
+                isOpen: true,
+                openTime: "09:00",
+                closeTime: "21:00"
+            },
+            answeredQuestions: []
+        };
+
+        // Current session data
+        let currentUser = null;
+        let currentQuestionIndex = 0;
+        let countdownInterval = null;
+        let selectedOption = null;
+        let hasAnsweredCurrentQuestion = false;
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const registerScreen = document.getElementById('registerScreen');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const userDashboard = document.getElementById('userDashboard');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const switchToLogin = document.getElementById('switchToLogin');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginErrorMessage = document.getElementById('loginErrorMessage');
+        const registerName = document.getElementById('registerName');
+        const registerMobile = document.getElementById('registerMobile');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerConfirmPassword = document.getElementById('registerConfirmPassword');
+        const registerErrorMessage = document.getElementById('registerErrorMessage');
+        const adminForm = document.getElementById('adminForm');
+        const usersListContainer = document.getElementById('usersListContainer');
+        const questionsListContainer = document.getElementById('questionsListContainer');
+        const adminOptionsContainer = document.getElementById('adminOptionsContainer');
+        const timerDuration = document.getElementById('timerDuration');
+        const logoutAdminBtn = document.getElementById('logoutAdminBtn');
+        const logoutUserBtn = document.getElementById('logoutUserBtn');
+        const userWelcome = document.getElementById('userWelcome');
+        const userMobileDisplay = document.getElementById('userMobileDisplay');
+        const walletAmount = document.getElementById('walletAmount');
+        const addMoneyBtn = document.getElementById('addMoneyBtn');
+        const withdrawMoneyBtn = document.getElementById('withdrawMoneyBtn');
+        const currentQuestionContainer = document.getElementById('currentQuestionContainer');
+        const noQuestionsMessage = document.getElementById('noQuestionsMessage');
+        const addMoneyRequestsList = document.getElementById('addMoneyRequestsList');
+        const withdrawRequestsList = document.getElementById('withdrawRequestsList');
+        const qrUploadForm = document.getElementById('qrUploadForm');
+        const qrCodeUpload = document.getElementById('qrCodeUpload');
+        const qrCodeText = document.getElementById('qrCodeText');
+        const currentQrContainer = document.getElementById('currentQrContainer');
+        const currentQrCode = document.getElementById('currentQrCode');
+        const currentUpiId = document.getElementById('currentUpiId');
+        const quizTimeStatus = document.getElementById('quizTimeStatus');
+        const statusText = document.getElementById('statusText');
+        const toggleQuizStatus = document.getElementById('toggleQuizStatus');
+        const openTime = document.getElementById('openTime');
+        const closeTime = document.getElementById('closeTime');
+        const saveTimeSettings = document.getElementById('saveTimeSettings');
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const clearQuestionsBtn = document.getElementById('clearQuestionsBtn');
+        const whatsappNumber = document.getElementById('whatsappNumber');
+        const saveWhatsappBtn = document.getElementById('saveWhatsappBtn');
+        
+        // Tab elements
+        const adminTabContents = {
+            create: document.getElementById('createTab'),
+            questions: document.getElementById('questionsTab'),
+            users: document.getElementById('usersTab'),
+            requests: document.getElementById('requestsTab'),
+            settings: document.getElementById('settingsTab')
+        };
+        
+        // Initialize the app
+        function init() {
+            // Set up tab switching for admin
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    const tabName = tab.getAttribute('data-tab');
+                    tab.classList.add('active');
+                    adminTabContents[tabName].classList.add('active');
+                    
+                    if (tabName === 'questions') {
+                        loadQuestionsList();
+                    } else if (tabName === 'requests') {
+                        loadRequests();
+                    } else if (tabName === 'settings') {
+                        loadQrCodeSettings();
+                        loadTimeSettings();
+                        loadWhatsappSettings();
+                    }
+                });
+            });
+            
+            // Set up switch between login and register
+            switchToRegister.addEventListener('click', () => {
+                loginScreen.style.display = 'none';
+                registerScreen.style.display = 'block';
+            });
+            
+            switchToLogin.addEventListener('click', () => {
+                registerScreen.style.display = 'none';
+                loginScreen.style.display = 'block';
+            });
+            
+            // Set up logout buttons
+            logoutAdminBtn.addEventListener('click', logout);
+            logoutUserBtn.addEventListener('click', logout);
+            
+            // Set up wallet buttons
+            addMoneyBtn.addEventListener('click', showAddMoneyModal);
+            withdrawMoneyBtn.addEventListener('click', showWithdrawModal);
+            
+            // Set up QR code upload form
+            qrUploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveQrCode();
+            });
+            
+            // WhatsApp contact button
+            whatsappBtn.addEventListener('click', openWhatsappChat);
+            
+            // Clear questions button
+            clearQuestionsBtn.addEventListener('click', clearAllQuestions);
+            
+            // Save WhatsApp number button
+            saveWhatsappBtn.addEventListener('click', saveWhatsappNumber);
+            
+            // Time settings
+            saveTimeSettings.addEventListener('click', saveTimeSettingsHandler);
+            toggleQuizStatus.addEventListener('click', toggleQuizStatusHandler);
+            
+            // Set up admin form submission
+            adminForm.addEventListener('submit', saveQuestion);
+            
+            // Load data from localStorage if available
+            loadFromLocalStorage();
+        }
+        
+        // Load questions list for admin
+        function loadQuestionsList() {
+            questionsListContainer.innerHTML = '';
+            
+            if (quizAppData.questions.length === 0) {
+                questionsListContainer.innerHTML = '<p>No questions created yet.</p>';
+                return;
+            }
+            
+            quizAppData.questions.forEach((question, index) => {
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                
+                questionItem.innerHTML = `
+                    <div class="question-text">${question.question}</div>
+                    <div class="question-options">
+                        ${question.options.map((option, i) => `
+                            <div class="question-option ${i === question.correctAnswer ? 'correct-option' : ''}">
+                                ${String.fromCharCode(65 + i)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="question-meta">
+                        Timer: ${question.timerDuration} seconds | ID: ${question.id}
+                    </div>
+                `;
+                
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'question-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.textContent = 'Edit';
+                editBtn.addEventListener('click', () => editQuestion(index));
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-question-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', () => deleteQuestion(index));
+                
+                actionsDiv.appendChild(editBtn);
+                actionsDiv.appendChild(deleteBtn);
+                questionItem.appendChild(actionsDiv);
+                
+                questionsListContainer.appendChild(questionItem);
+            });
+        }
+        
+        function editQuestion(index) {
+            const question = quizAppData.questions[index];
+            
+            // Fill the form with question data
+            document.getElementById('questionInput').value = question.question;
+            
+            const optionInputs = document.querySelectorAll('.option-input');
+            optionInputs.forEach((input, i) => {
+                input.value = question.options[i];
+            });
+            
+            // Set correct answer radio button
+            document.querySelector(`input[name="correctOption"][value="${question.correctAnswer}"]`).checked = true;
+            
+            // Set timer duration
+            document.getElementById('timerDuration').value = question.timerDuration;
+            
+            // Switch to create tab
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector('.admin-tab[data-tab="create"]').classList.add('active');
+            document.getElementById('createTab').classList.add('active');
+            
+            // Remove the question from the array (will be re-added when saved)
+            quizAppData.questions.splice(index, 1);
+        }
+        
+        function deleteQuestion(index) {
+            if (confirm("Are you sure you want to delete this question?")) {
+                quizAppData.questions.splice(index, 1);
+                saveToLocalStorage();
+                loadQuestionsList();
+            }
+        }
+        
+        // WhatsApp functions
+        function openWhatsappChat() {
+            const message = "Hello, I need help with the quiz app.";
+            const url = `https://wa.me/${quizAppData.whatsappContactNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+        
+        function loadWhatsappSettings() {
+            whatsappNumber.value = quizAppData.whatsappContactNumber;
+        }
+        
+        function saveWhatsappNumber() {
+            const number = whatsappNumber.value.trim();
+            if (!number) {
+                alert("Please enter a valid WhatsApp number");
+                return;
+            }
+            
+            quizAppData.whatsappContactNumber = number;
+            saveToLocalStorage();
+            alert("WhatsApp number saved successfully!");
+        }
+        
+        // Clear questions function
+        function clearAllQuestions() {
+            if (confirm("Are you sure you want to clear ALL questions? This action cannot be undone.")) {
+                quizAppData.questions = [];
+                quizAppData.answeredQuestions = [];
+                saveToLocalStorage();
+                loadQuestionsList();
+                alert("All questions have been cleared.");
+            }
+        }
+        
+        // Time settings functions
+        function loadTimeSettings() {
+            openTime.value = quizAppData.quizTiming.openTime;
+            closeTime.value = quizAppData.quizTiming.closeTime;
+            updateTimeStatusDisplay();
+        }
+        
+        function updateTimeStatusDisplay() {
+            const now = new Date();
+            const currentHours = now.getHours().toString().padStart(2, '0');
+            const currentMinutes = now.getMinutes().toString().padStart(2, '0');
+            const currentTime = `${currentHours}:${currentMinutes}`;
+            
+            // Check if current time is within opening hours
+            const isWithinTime = currentTime >= quizAppData.quizTiming.openTime && currentTime <= quizAppData.quizTiming.closeTime;
+            quizAppData.quizTiming.isOpen = isWithinTime;
+            
+            // Update admin dashboard
+            if (statusText) {
+                if (quizAppData.quizTiming.isOpen) {
+                    statusText.textContent = "OPEN";
+                    statusText.style.color = "#4CAF50";
+                    toggleQuizStatus.textContent = "Close Quiz";
+                    toggleQuizStatus.classList.remove('closed');
+                } else {
+                    statusText.textContent = "CLOSED";
+                    statusText.style.color = "#f44336";
+                    toggleQuizStatus.textContent = "Open Quiz";
+                    toggleQuizStatus.classList.add('closed');
+                }
+            }
+            
+            // Update user dashboard
+            if (quizTimeStatus) {
+                if (quizAppData.quizTiming.isOpen) {
+                    quizTimeStatus.textContent = "OPEN NOW";
+                    quizTimeStatus.className = "quiz-status open";
+                } else {
+                    quizTimeStatus.textContent = "CLOSED";
+                    quizTimeStatus.className = "quiz-status closed";
+                }
+            }
+        }
+        
+        function saveTimeSettingsHandler() {
+            quizAppData.quizTiming.openTime = openTime.value;
+            quizAppData.quizTiming.closeTime = closeTime.value;
+            
+            // Recalculate status
+            updateTimeStatusDisplay();
+            
+            saveToLocalStorage();
+            alert("Timing settings saved successfully!");
+        }
+        
+        function toggleQuizStatusHandler() {
+            quizAppData.quizTiming.isOpen = !quizAppData.quizTiming.isOpen;
+            saveTimeSettingsHandler();
+        }
+        
+        // Event Listeners
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const mobile = loginUsername.value;
+            const password = loginPassword.value;
+            
+            const user = quizAppData.users.find(u => u.mobile === mobile && u.password === password);
+            
+            if (user) {
+                // Successful login
+                currentUser = user;
+                loginScreen.style.display = 'none';
+                loginErrorMessage.style.display = 'none';
+                
+                if (user.isAdmin) {
+                    adminDashboard.style.display = 'block';
+                    loadAdminDashboard();
+                    loadQuestionsList();
+                    loadTimeSettings();
+                } else {
+                    userDashboard.style.display = 'block';
+                    updateUserDashboard();
+                    loadCurrentQuestion();
+                    updateTimeStatusDisplay();
+                }
+            } else {
+                // Failed login
+                loginErrorMessage.style.display = 'block';
+            }
+        });
+        
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = registerName.value.trim();
+            const mobile = registerMobile.value.trim();
+            const password = registerPassword.value;
+            const confirmPassword = registerConfirmPassword.value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                registerErrorMessage.textContent = "Passwords don't match";
+                registerErrorMessage.style.display = 'block';
+                return;
+            }
+            
+            if (quizAppData.users.some(u => u.mobile === mobile)) {
+                registerErrorMessage.textContent = "Mobile number already registered";
+                registerErrorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Create new user with ₹50 initial wallet balance
+            const newUser = {
+                id: quizAppData.users.length > 0 ? Math.max(...quizAppData.users.map(u => u.id)) + 1 : 1,
+                name: name,
+                mobile: mobile,
+                password: password,
+                isAdmin: false,
+                wallet: 50, // Add ₹50 to new user's wallet
+                transactions: [
+                    {
+                        id: 1,
+                        type: 'bonus',
+                        amount: 50,
+                        date: new Date().toISOString().split('T')[0],
+                        note: 'Welcome bonus'
+                    }
+                ]
+            };
+            
+            quizAppData.users.push(newUser);
+            saveToLocalStorage();
+            
+            // Auto-login
+            currentUser = newUser;
+            registerScreen.style.display = 'none';
+            userDashboard.style.display = 'block';
+            updateUserDashboard();
+            loadCurrentQuestion();
+            updateTimeStatusDisplay();
+        });
+        
+        function saveQuestion(e) {
+            e.preventDefault();
+            
+            const questionText = document.getElementById('questionInput').value;
+            const optionInputs = document.querySelectorAll('.option-input');
+            const correctOption = document.querySelector('input[name="correctOption"]:checked').value;
+            const timerDurationValue = parseInt(timerDuration.value) || 30;
+            
+            const options = Array.from(optionInputs).map(input => input.value);
+            
+            if (!questionText) {
+                alert("Please enter a question");
+                return;
+            }
+            
+            if (options.some(opt => !opt)) {
+                alert("Please fill in all options");
+                return;
+            }
+            
+            // Create new question with a unique ID
+            const newQuestion = {
+                id: quizAppData.questions.length > 0 ? Math.max(...quizAppData.questions.map(q => q.id)) + 1 : 1,
+                question: questionText,
+                options: options,
+                correctAnswer: parseInt(correctOption),
+                timerDuration: timerDurationValue
+            };
+            
+            // Add to questions array (replace if already exists)
+            const existingIndex = quizAppData.questions.findIndex(q => q.id === newQuestion.id);
+            if (existingIndex >= 0) {
+                quizAppData.questions[existingIndex] = newQuestion;
+            } else {
+                quizAppData.questions.push(newQuestion);
+            }
+            
+            saveToLocalStorage();
+            alert("Question saved successfully!");
+            
+            // Reset form
+            document.getElementById('questionInput').value = '';
+            document.querySelectorAll('.option-row').forEach((row, i) => {
+                row.querySelector('.option-input').value = '';
+                if (i === 0) {
+                    row.querySelector('input[type="radio"]').checked = true;
+                }
+            });
+            
+            timerDuration.value = '30';
+            
+            // Reload questions list
+            loadQuestionsList();
+        }
+        
+        function loadAdminDashboard() {
+            loadUsersList();
+            loadRequests();
+            loadQrCodeSettings();
+            loadTimeSettings();
+            loadWhatsappSettings();
+        }
+        
+        function loadQrCodeSettings() {
+            if (quizAppData.paymentQrCode.image) {
+                currentQrCode.src = quizAppData.paymentQrCode.image;
+                currentUpiId.textContent = quizAppData.paymentQrCode.upiId ? `UPI ID: ${quizAppData.paymentQrCode.upiId}` : '';
+                currentQrContainer.style.display = 'block';
+            } else {
+                currentQrContainer.style.display = 'none';
+            }
+        }
+        
+        function loadUsersList() {
+            usersListContainer.innerHTML = '';
+            
+            const regularUsers = quizAppData.users.filter(u => !u.isAdmin);
+            
+            if (regularUsers.length === 0) {
+                usersListContainer.innerHTML = '<p>No users yet.</p>';
+                return;
+            }
+            
+            regularUsers.forEach((user, index) => {
+                const userItem = document.createElement('div');
+                userItem.className = 'admin-question-item';
+                
+                userItem.innerHTML = `
+                    <h3>${user.name}</h3>
+                    <p>Mobile: ${user.mobile}</p>
+                    <p>Wallet: ₹${user.wallet}</p>
+                    <p>Joined: ${user.transactions.length > 0 ? user.transactions[0].date : 'Recently'}</p>
+                `;
+                
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'user-actions';
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete User';
+                deleteBtn.addEventListener('click', () => deleteUser(index));
+                
+                actionsDiv.appendChild(deleteBtn);
+                userItem.appendChild(actionsDiv);
+                
+                usersListContainer.appendChild(userItem);
+            });
+        }
+        
+        function loadRequests() {
+            addMoneyRequestsList.innerHTML = '';
+            withdrawRequestsList.innerHTML = '';
+            
+            if (quizAppData.addMoneyRequests.length === 0) {
+                addMoneyRequestsList.innerHTML = '<p>No add money requests.</p>';
+            } else {
+                quizAppData.addMoneyRequests.forEach((request, index) => {
+                    const requestItem = document.createElement('div');
+                    requestItem.className = 'request-item';
+                    
+                    requestItem.innerHTML = `
+                        <h3>${request.userName} (${request.userMobile})</h3>
+                        <p>Amount: ₹${request.amount}</p>
+                        <p>Date: ${request.date}</p>
+                    `;
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'request-actions';
+                    
+                    const approveBtn = document.createElement('button');
+                    approveBtn.className = 'approve-btn';
+                    approveBtn.textContent = 'Approve';
+                    approveBtn.addEventListener('click', () => approveAddMoneyRequest(index));
+                    
+                    const rejectBtn = document.createElement('button');
+                    rejectBtn.className = 'reject-btn';
+                    rejectBtn.textContent = 'Reject';
+                    rejectBtn.addEventListener('click', () => rejectAddMoneyRequest(index));
+                    
+                    actionsDiv.appendChild(approveBtn);
+                    actionsDiv.appendChild(rejectBtn);
+                    requestItem.appendChild(actionsDiv);
+                    
+                    addMoneyRequestsList.appendChild(requestItem);
+                });
+            }
+            
+            if (quizAppData.withdrawRequests.length === 0) {
+                withdrawRequestsList.innerHTML = '<p>No withdrawal requests.</p>';
+            } else {
+                quizAppData.withdrawRequests.forEach((request, index) => {
+                    const requestItem = document.createElement('div');
+                    requestItem.className = 'request-item';
+                    
+                    requestItem.innerHTML = `
+                        <h3>${request.userName} (${request.userMobile})</h3>
+                        <p>Amount: ₹${request.amount}</p>
+                        <p>UPI: ${request.upiMobile}</p>
+                        <p>Date: ${request.date}</p>
+                    `;
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'request-actions';
+                    
+                    const approveBtn = document.createElement('button');
+                    approveBtn.className = 'approve-btn';
+                    approveBtn.textContent = 'Approve';
+                    approveBtn.addEventListener('click', () => approveWithdrawRequest(index));
+                    
+                    const rejectBtn = document.createElement('button');
+                    rejectBtn.className = 'reject-btn';
+                    rejectBtn.textContent = 'Reject';
+                    rejectBtn.addEventListener('click', () => rejectWithdrawRequest(index));
+                    
+                    actionsDiv.appendChild(approveBtn);
+                    actionsDiv.appendChild(rejectBtn);
+                    requestItem.appendChild(actionsDiv);
+                    
+                    withdrawRequestsList.appendChild(requestItem);
+                });
+            }
+        }
+        
+        function loadCurrentQuestion() {
+            currentQuestionContainer.innerHTML = '';
+            hasAnsweredCurrentQuestion = false;
+            
+            // First check if quiz is open
+            if (!quizAppData.quizTiming.isOpen) {
+                currentQuestionContainer.innerHTML = `
+                    <div class="no-questions-message">
+                        <h3>Quiz is currently closed</h3>
+                        <p>Please come back during open hours (${quizAppData.quizTiming.openTime} - ${quizAppData.quizTiming.closeTime})</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Then check if user has sufficient balance (minimum ₹30)
+            if (currentUser.wallet < 30) {
+                currentQuestionContainer.innerHTML = `
+                    <div class="no-balance-message">
+                        <h3>Insufficient Balance</h3>
+                        <p>You need at least ₹30 in your wallet to answer questions</p>
+                        <button class="btn" id="addMoneyFromQuizBtn">Add Money Now</button>
+                    </div>
+                `;
+                
+                document.getElementById('addMoneyFromQuizBtn').addEventListener('click', showAddMoneyModal);
+                return;
+            }
+            
+            // Filter out questions that have already been answered
+            const unansweredQuestions = quizAppData.questions.filter(q => !quizAppData.answeredQuestions.includes(q.id));
+            
+            if (unansweredQuestions.length === 0) {
+                noQuestionsMessage.style.display = 'block';
+                return;
+            } else {
+                noQuestionsMessage.style.display = 'none';
+            }
+            
+            // Get the current question (first in the unanswered list)
+            const question = unansweredQuestions[0];
+            const questionIndex = quizAppData.questions.findIndex(q => q.id === question.id);
+            
+            // Check if this question has already been answered (additional check)
+            if (quizAppData.answeredQuestions.includes(question.id)) {
+                currentQuestionContainer.innerHTML = `
+                    <div class="already-answered-message">
+                        <h3>You've already answered this question</h3>
+                        <p>Please wait for the next question</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            currentQuestionContainer.innerHTML = `
+                <div class="current-question">${question.question}</div>
+                <div class="countdown-timer" id="countdownTimer">Time: ${question.timerDuration}s</div>
+                <div class="current-options" id="currentOptions"></div>
+                <div class="result-message correct-message" id="correctMessage">Congratulations! You answered correctly. ₹50 added to your wallet.</div>
+                <div class="result-message wrong-message" id="wrongMessage">Wrong answer! ₹30 deducted from your wallet. The correct answer was: ${question.options[question.correctAnswer]}</div>
+                <div class="next-btn-container" id="nextBtnContainer">
+                    <button class="btn" id="nextQuestionBtn">Next Question</button>
+                </div>
+            `;
+            
+            const optionsContainer = currentQuestionContainer.querySelector('#currentOptions');
+            const countdownTimer = currentQuestionContainer.querySelector('#countdownTimer');
+            const correctMessage = currentQuestionContainer.querySelector('#correctMessage');
+            const wrongMessage = currentQuestionContainer.querySelector('#wrongMessage');
+            const nextBtnContainer = currentQuestionContainer.querySelector('#nextBtnContainer');
+            const nextQuestionBtn = currentQuestionContainer.querySelector('#nextQuestionBtn');
+            
+            // Reset selected option
+            selectedOption = null;
+            
+            // Start countdown timer
+            let timeLeft = question.timerDuration;
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdownTimer.textContent = `Time: ${timeLeft}s`;
+                
+                if (timeLeft <= 5) {
+                    countdownTimer.classList.add('timer-ended');
+                }
+                
+                if (timeLeft <= 0 && !hasAnsweredCurrentQuestion) {
+                    clearInterval(countdownInterval);
+                    countdownTimer.textContent = "Time's up!";
+                    
+                    // If user selected an option before time ran out
+                    if (selectedOption !== null) {
+                        answerQuestion(questionIndex, selectedOption);
+                        if (selectedOption === question.correctAnswer) {
+                            correctMessage.style.display = 'block';
+                        } else {
+                            wrongMessage.style.display = 'block';
+                        }
+                    } else {
+                        // If time ran out without selection
+                        answerQuestion(questionIndex, -1); // -1 means no answer selected
+                        wrongMessage.style.display = 'block';
+                    }
+                    
+                    // Show next button
+                    nextBtnContainer.style.display = 'block';
+                }
+            }, 1000);
+            
+            question.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'current-option';
+                
+                const optionLetter = document.createElement('span');
+                optionLetter.className = 'option-letter';
+                optionLetter.textContent = String.fromCharCode(65 + i);
+                
+                const optionText = document.createElement('span');
+                optionText.textContent = option;
+                
+                optionDiv.appendChild(optionLetter);
+                optionDiv.appendChild(optionText);
+                
+                optionDiv.addEventListener('click', () => {
+                    if (timeLeft <= 0 || hasAnsweredCurrentQuestion) return; // Don't allow selection after time is up or if already answered
+                    
+                    // Remove selected class from all options
+                    document.querySelectorAll('.current-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    optionDiv.classList.add('selected');
+                    
+                    selectedOption = i;
+                    hasAnsweredCurrentQuestion = true;
+                    clearInterval(countdownInterval);
+                    
+                    answerQuestion(questionIndex, selectedOption);
+                    
+                    if (i === question.correctAnswer) {
+                        correctMessage.style.display = 'block';
+                    } else {
+                        wrongMessage.style.display = 'block';
+                    }
+                    
+                    // Disable all options after selection
+                    document.querySelectorAll('.current-option').forEach(opt => {
+                        opt.classList.add('disabled');
+                    });
+                    
+                    // Show next button
+                    nextBtnContainer.style.display = 'block';
+                });
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            // Set up next question button
+            nextQuestionBtn.addEventListener('click', () => {
+                // Mark as answered
+                quizAppData.answeredQuestions.push(question.id);
+                saveToLocalStorage();
+                loadCurrentQuestion();
+            });
+        }
+        
+        function answerQuestion(questionIndex, selectedOption) {
+            const question = quizAppData.questions[questionIndex];
+            
+            if (selectedOption === question.correctAnswer) {
+                // Add reward to wallet
+                currentUser.wallet += 50;
+                currentUser.transactions.push({
+                    id: currentUser.transactions.length > 0 ? Math.max(...currentUser.transactions.map(t => t.id)) + 1 : 1,
+                    type: 'quiz_reward',
+                    amount: 50,
+                    date: new Date().toISOString().split('T')[0],
+                    note: `Correct answer to: ${question.question.substring(0, 20)}...`
+                });
+            } else {
+                // Wrong answer
+                currentUser.wallet = Math.max(0, currentUser.wallet - 30); // Deduct ₹30 for wrong answer (minimum 0)
+                currentUser.transactions.push({
+                    id: currentUser.transactions.length > 0 ? Math.max(...currentUser.transactions.map(t => t.id)) + 1 : 1,
+                    type: 'quiz_penalty',
+                    amount: 30,
+                    date: new Date().toISOString().split('T')[0],
+                    note: `Wrong answer to: ${question.question.substring(0, 20)}...`
+                });
+            }
+            
+            updateUserDashboard();
+            saveToLocalStorage();
+        }
+        
+        function saveQrCode() {
+            const file = qrCodeUpload.files[0];
+            const upiId = qrCodeText.value.trim();
+            
+            if (!file) {
+                alert("Please select a QR code image");
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                quizAppData.paymentQrCode = {
+                    image: e.target.result,
+                    upiId: upiId
+                };
+                
+                loadQrCodeSettings();
+                saveToLocalStorage();
+                alert("QR code saved successfully!");
+                
+                // Reset form
+                qrUploadForm.reset();
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function deleteUser(index) {
+            const regularUsers = quizAppData.users.filter(u => !u.isAdmin);
+            const userToDelete = regularUsers[index];
+            
+            if (confirm(`Are you sure you want to delete user ${userToDelete.name}?`)) {
+                quizAppData.users = quizAppData.users.filter(u => u.id !== userToDelete.id);
+                loadUsersList();
+                saveToLocalStorage();
+            }
+        }
+        
+        function updateUserDashboard() {
+            userWelcome.textContent = `Welcome, ${currentUser.name}!`;
+            userMobileDisplay.textContent = currentUser.mobile;
+            walletAmount.textContent = currentUser.wallet;
+        }
+        
+        function showAddMoneyModal() {
+            if (!quizAppData.paymentQrCode.image) {
+                alert("Payment QR code is not set up yet. Please contact admin.");
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            
+            modalContent.innerHTML = `
+                <h3 class="modal-title">Add Money to Wallet</h3>
+                <div class="form-group">
+                    <label for="paymentScreenshot">Upload Payment Screenshot</label>
+                    <input type="file" id="paymentScreenshot" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="payerMobile">Your Mobile Number</label>
+                    <input type="text" id="payerMobile" placeholder="Enter your mobile number" value="${currentUser.mobile}">
+                </div>
+                <div class="form-group">
+                    <label>Scan this QR code to pay</label>
+                </div>
+                <div class="qr-code-container">
+                    <img src="${quizAppData.paymentQrCode.image}" alt="Payment QR Code" class="qr-code">
+                    ${quizAppData.paymentQrCode.upiId ? `<p style="text-align: center;">UPI ID: ${quizAppData.paymentQrCode.upiId}</p>` : ''}
+                </div>
+                <button class="download-btn" id="downloadQrBtn">Download QR Code</button>
+                <div class="form-group">
+                    <label for="addAmount">Enter Amount Paid</label>
+                    <input type="number" id="addAmount" placeholder="Enter amount" min="1">
+                </div>
+                <div class="modal-actions">
+                    <button id="submitAddMoneyBtn" class="modal-btn modal-btn-primary">Submit Request</button>
+                    <button id="cancelAddMoneyBtn" class="modal-btn modal-btn-secondary">Cancel</button>
+                </div>
+            `;
+            
+            // Download QR code button
+            const downloadBtn = modalContent.querySelector('#downloadQrBtn');
+            downloadBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.href = quizAppData.paymentQrCode.image;
+                link.download = 'payment-qr-code.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            const submitBtn = modalContent.querySelector('#submitAddMoneyBtn');
+            submitBtn.addEventListener('click', () => {
+                const mobile = modalContent.querySelector('#payerMobile').value.trim();
+                const amount = parseFloat(modalContent.querySelector('#addAmount').value);
+                const screenshotFile = modalContent.querySelector('#paymentScreenshot').files[0];
+                
+                if (!mobile || mobile.length < 10) {
+                    alert("Please enter a valid mobile number");
+                    return;
+                }
+                
+                if (!amount || isNaN(amount)) {
+                    alert("Please enter a valid amount");
+                    return;
+                }
+                
+                if (!screenshotFile) {
+                    alert("Please upload payment screenshot");
+                    return;
+                }
+                
+                // Create add money request
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const request = {
+                        id: quizAppData.addMoneyRequests.length > 0 ? Math.max(...quizAppData.addMoneyRequests.map(r => r.id)) + 1 : 1,
+                        userId: currentUser.id,
+                        userName: currentUser.name,
+                        userMobile: mobile,
+                        amount: amount,
+                        paymentProof: e.target.result,
+                        date: new Date().toISOString().split('T')[0],
+                        status: 'pending'
+                    };
+                    
+                    quizAppData.addMoneyRequests.push(request);
+                    document.body.removeChild(modal);
+                    alert("Add money request submitted for admin approval");
+                    saveToLocalStorage();
+                };
+                reader.readAsDataURL(screenshotFile);
+            });
+            
+            const cancelBtn = modalContent.querySelector('#cancelAddMoneyBtn');
+            cancelBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        function showWithdrawModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            
+            modalContent.innerHTML = `
+                <h3 class="modal-title">Withdraw Money</h3>
+                <div class="form-group">
+                    <label for="withdrawAmount">Amount to Withdraw (Minimum ₹300)</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount" min="300" max="${currentUser.wallet}">
+                </div>
+                <div class="form-group">
+                    <label for="withdrawMobile">Mobile Number for UPI</label>
+                    <input type="text" id="withdrawMobile" placeholder="Enter UPI mobile number" value="${currentUser.mobile}">
+                </div>
+                <div class="modal-actions">
+                    <button id="submitWithdrawBtn" class="modal-btn modal-btn-primary">Submit Request</button>
+                    <button id="cancelWithdrawBtn" class="modal-btn modal-btn-secondary">Cancel</button>
+                </div>
+            `;
+            
+            const submitBtn = modalContent.querySelector('#submitWithdrawBtn');
+            submitBtn.addEventListener('click', () => {
+                const amount = parseFloat(modalContent.querySelector('#withdrawAmount').value);
+                const mobile = modalContent.querySelector('#withdrawMobile').value.trim();
+                
+                if (!amount || isNaN(amount) || amount < 300) {
+                    alert("Minimum withdrawal amount is ₹300");
+                    return;
+                }
+                
+                if (amount > currentUser.wallet) {
+                    alert("Insufficient funds in your wallet");
+                    return;
+                }
+                
+                if (!mobile || mobile.length < 10) {
+                    alert("Please enter a valid mobile number");
+                    return;
+                }
+                
+                // Create withdrawal request
+                const request = {
+                    id: quizAppData.withdrawRequests.length > 0 ? Math.max(...quizAppData.withdrawRequests.map(r => r.id)) + 1 : 1,
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    userMobile: currentUser.mobile,
+                    amount: amount,
+                    upiMobile: mobile,
+                    date: new Date().toISOString().split('T')[0],
+                    status: 'pending'
+                };
+                
+                quizAppData.withdrawRequests.push(request);
+                document.body.removeChild(modal);
+                alert("Withdrawal request submitted for admin approval");
+                saveToLocalStorage();
+            });
+            
+            const cancelBtn = modalContent.querySelector('#cancelWithdrawBtn');
+            cancelBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        function approveAddMoneyRequest(index) {
+            const request = quizAppData.addMoneyRequests[index];
+            const user = quizAppData.users.find(u => u.id === request.userId);
+            
+            if (user) {
+                user.wallet += request.amount;
+                user.transactions.push({
+                    id: user.transactions.length > 0 ? Math.max(...user.transactions.map(t => t.id)) + 1 : 1,
+                    type: 'deposit',
+                    amount: request.amount,
+                    date: new Date().toISOString().split('T')[0],
+                    note: 'Added via admin approval'
+                });
+                
+                quizAppData.addMoneyRequests.splice(index, 1);
+                loadRequests();
+                saveToLocalStorage();
+                alert(`₹${request.amount} added to ${user.name}'s wallet`);
+            }
+        }
+        
+        function rejectAddMoneyRequest(index) {
+            if (confirm("Are you sure you want to reject this add money request?")) {
+                quizAppData.addMoneyRequests.splice(index, 1);
+                loadRequests();
+                saveToLocalStorage();
+            }
+        }
+        
+        function approveWithdrawRequest(index) {
+            const request = quizAppData.withdrawRequests[index];
+            const user = quizAppData.users.find(u => u.id === request.userId);
+            
+            if (user) {
+                if (user.wallet < request.amount) {
+                    alert("User doesn't have sufficient balance");
+                    return;
+                }
+                
+                user.wallet -= request.amount;
+                user.transactions.push({
+                    id: user.transactions.length > 0 ? Math.max(...user.transactions.map(t => t.id)) + 1 : 1,
+                    type: 'withdrawal',
+                    amount: request.amount,
+                    date: new Date().toISOString().split('T')[0],
+                    note: `Withdrawal to ${request.upiMobile}`
+                });
+                
+                quizAppData.withdrawRequests.splice(index, 1);
+                loadRequests();
+                saveToLocalStorage();
+                alert(`₹${request.amount} withdrawn from ${user.name}'s wallet`);
+            }
+        }
+        
+        function rejectWithdrawRequest(index) {
+            if (confirm("Are you sure you want to reject this withdrawal request?")) {
+                quizAppData.withdrawRequests.splice(index, 1);
+                loadRequests();
+                saveToLocalStorage();
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            quizAppData.answeredQuestions = [];
+            adminDashboard.style.display = 'none';
+            userDashboard.style.display = 'none';
+            loginScreen.style.display = 'none';
+            registerScreen.style.display = 'none';
+            loginScreen.style.display = 'block';
+            
+            // Reset form fields
+            loginUsername.value = '';
+            loginPassword.value = '';
+            registerName.value = '';
+            registerMobile.value = '';
+            registerPassword.value = '';
+            registerConfirmPassword.value = '';
+            loginErrorMessage.style.display = 'none';
+            registerErrorMessage.style.display = 'none';
+            
+            // Clear any active countdown
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+        }
+        
+        function saveToLocalStorage() {
+            localStorage.setItem('quizAppData', JSON.stringify(quizAppData));
+        }
+        
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('quizAppData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                Object.assign(quizAppData, parsedData);
+            }
+        }
+        
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
